@@ -187,14 +187,14 @@ getTrialRT <- function(id, response, block){
   return(df)
 }
 
-getBlockRT <- function(id = '00', response = 'press', blocks = c('00', '06', '12', '18')){
+getBlockRT <- function(id = '01', response = 'press', blocks = c('00', '05', '10', '15', '20')){
   
   blockdat <- data.frame()
   
   for(block in blocks){
     dat <- getTrialRT(id = id, response = response, block = block)
     #remove trial error = 1 (trials with errors)
-    ndat <- dat[-which(dat$trial_error == 1),]
+    ndat <- dat[which(dat$trial_error == 0),]
 
     blockmu <- mean(ndat$responsetime, na.rm = T)
     blocksigma <- sd(ndat$responsetime, na.rm = T)
@@ -208,7 +208,7 @@ getBlockRT <- function(id = '00', response = 'press', blocks = c('00', '06', '12
   return(blockdat)
 }
 
-getTargetOnlyRTCI <- function(blocks = c('00', '06', '12', '18')){
+getTargetOnlyRTCI <- function(blocks = c('00', '05', '10', '15', '20')){
   
   dat <- getBlockRT()
   targetCI <- data.frame()
@@ -227,7 +227,7 @@ getTargetOnlyRTCI <- function(blocks = c('00', '06', '12', '18')){
   return(targetCI)
 }
 
-getTargetDistRTCI <- function(blocks = c('00', '06', '12', '18')){
+getTargetDistRTCI <- function(blocks = c('00', '05', '10', '15', '20')){
   
   dat <- getBlockRT()
   targdistCI <- data.frame()
@@ -253,11 +253,11 @@ plotRT <- function(trialtype = c('td', 'to'), target='inline'){
     svglite(file='doc/fig/Fig1_KeyPressRT.svg', width=10, height=7, pointsize=14, system_fonts=list(sans="Arial"))
   }
   
-  plot(NA, NA, xlim = c(0,5), ylim = c(350,750), 
+  plot(NA, NA, xlim = c(0,6), ylim = c(350,750), 
        xlab = "block", ylab = "reaction time (ms)", frame.plot = FALSE, #frame.plot takes away borders
        main = "Key press trials", xaxt = 'n', yaxt = 'n')
   
-  axis(side=1, at=c(1, 2, 3, 4))
+  axis(side=1, at=c(1, 2, 3, 4, 5))
   axis(2, at = c(400, 420, 440, 460, 480, 500, 520, 540, 560, 580, 600, 620, 640, 660, 680, 700), las = 2)
   
   
@@ -299,7 +299,7 @@ plotRT <- function(trialtype = c('td', 'to'), target='inline'){
   }
   
   #add legend
-  legend(3,700,legend=c('target only','target + distractor'),
+  legend(3.5,500,legend=c('target only','target + distractor'),
          col=c(colourscheme[['to']][['S']],colourscheme[['td']][['S']]),
          lty=1,bty='n',cex=1,lwd=2)
   
